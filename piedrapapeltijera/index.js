@@ -1,38 +1,43 @@
-let duracion = 0;
+const btnSeleccion = document.querySelectorAll("button");
+const scoreContainer = document.querySelector(".result");
+const result = document.createElement("p");
+
 let playerScore = 0;
 let pcScore = 0;
 let draw = 0;
 
 function getComputerChoice() {
   let random = ["paper", "rock", "scissors"];
-  let nRandom = Math.floor(Math.random() * random.length);
+  let nRandom = Math.ceil(Math.random() * random.length);
   return random[nRandom];
 }
 
-function game() {
-  while (duracion < 5) {
-    duracion++;
-    let playerSelection = prompt("Ingrese una opcion : rock, paper, scissors")
-      .toString()
-      .toLowerCase();
-    playRound(playerSelection);
+function game(selection) {
+  playRound(selection);
+
+  
+  if (playerScore === 5) {
+    result.textContent = "El Jugador Gana";
+    disableButton()
+  } else if (pcScore === 5) {
+    result.textContent = "El pc gana";
+    disableButton()
+  } else if (draw === 5) {
+    result.textContent = "Es un empate";
+    disableButton()
   }
 
-  if (draw > pcScore && draw > playerScore) {
-    console.log("El juego se empata");
-  } else if (playerScore > pcScore && playerScore > draw) {
-    console.log("El jugador gana la partida");
-  } else {
-    console.log("La maquina gana la partida");
-  }
+  
+
+  scoreContainer.appendChild(result);
 }
 
 function playRound(playerSelection) {
   let computerSelection = getComputerChoice();
 
   if (playerSelection === computerSelection) {
-    draw = draw + 1;
-    console.log("draw");
+    console.log("draw")
+    return (draw = draw + 1);
   }
 
   if (
@@ -40,9 +45,7 @@ function playRound(playerSelection) {
     (playerSelection === "scissors" && computerSelection === "paper") ||
     (playerSelection === "paper" && computerSelection === "rock")
   ) {
-    playerScore = playerScore + 1;
-
-    console.log(`You win! ${playerSelection} beats ${computerSelection}`);
+    return (playerScore = playerScore + 1);
   }
 
   if (
@@ -50,14 +53,19 @@ function playRound(playerSelection) {
     (computerSelection === "scissors" && playerSelection === "paper") ||
     (computerSelection === "paper" && playerSelection === "rock")
   ) {
-    pcScore = pcScore + 1;
-
-    console.log(`You Lose! ${computerSelection} beats ${playerSelection}`);
+    console.log(computerSelection, " ", playerSelection);
+    return (pcScore = pcScore + 1);
   }
 }
 
-game();
 
+function disableButton(){
+  btnSeleccion.forEach(btn => btn.disabled = true)
+}
 
-const d = new Date();
-
+btnSeleccion.forEach((button) => {
+  button.addEventListener("click", (e) => {
+    let selection = e.target.innerText;
+    game(selection);
+  });
+});
